@@ -42,7 +42,6 @@ syntax Expr
 syntax If_statement
   = "if" "(" Expr ")" "{" Question* questions "}" 
   | "if" "(" Expr ")" "{" Question* questions "}" Else_statement else_statement
-  | "if" "(" Expr ")" "{" Question* questions "}" Else_statement else_statement
   ;
 
 syntax Else_statement
