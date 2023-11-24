@@ -7,11 +7,11 @@ extend lang::std::Id;
  * Concrete syntax of QL
  */
 
-start syntax Form 
-  = "form" Id name "{" Question* questions "}"; 
+start syntax Form
+  = "form" Id name "{" Question* questions "}";
 
 // TODO: question, computed question, block, if-then-else, if-then
-syntax Question 
+syntax Question
   = Str Answer
   | If_statement if_statement
   ;
@@ -24,44 +24,46 @@ syntax Answer
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
 // Think about disambiguation using priorities and associativity
 // and use C/Java style precedence rules (look it up on the internet)
-syntax Expr 
+syntax Expr
   = Id
   | Bool
   | Int
   | Str
   | "(" Expr ")"
-  | Expr "-" Expr
-  | Expr "+" Expr
-  | Expr "*" Expr
-  | Expr "/" Expr
+  > left (
+      Expr "*" Expr
+    | left Expr "/" Expr
+  )
+  > left (
+      Expr "-" Expr
+    | left Expr "+" Expr
+  )
   | Expr "&&" Expr
   | Expr "||" Expr
   | Expr "\>" Expr
   ;
 
 syntax If_statement
-  = "if" "(" Expr ")" "{" Question* questions "}" 
+  = "if" "(" Expr ")" "{" Question* questions "}"
   | "if" "(" Expr ")" "{" Question* questions "}" Else_statement else_statement
   ;
 
 syntax Else_statement
-  = "else" "{" Question* questions "}" 
+  = "else" "{" Question* questions "}"
   | "else" "(" Expr ")" "{" Question* questions "}"
   ;
-  
+
 syntax Type
   = "boolean"
   | "integer"
   | "string";
 
-lexical Str 
+lexical Str
   = "\"" (![\"]|"\\\"")* "\""
   ;
 
-
-lexical Int 
-  = [1-9][0-9]*
-  | "0"
+lexical Int
+  = "-"? [0-9]+
   ;
 
 lexical Bool

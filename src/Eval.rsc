@@ -6,7 +6,7 @@ import Resolve;
 /*
  * Implement big-step semantics for QL
  */
- 
+
 // NB: Eval may assume the form is type- and name-correct.
 
 
@@ -23,7 +23,7 @@ alias VEnv = map[str name, Value \value];
 // Modeling user input
 data Input
   = input(str question, Value \value);
-  
+
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
@@ -40,21 +40,21 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-  return (); 
+  return ();
 }
 
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
   // evaluate conditions for branching,
   // evaluate inp and computed questions to return updated VEnv
-  return (); 
+  return ();
 }
 
 Value eval(AExpr e, VEnv venv) {
   switch (e) {
     case ref(id(str x)): return venv[x];
-    
+
     // etc.
-    
+
     default: throw "Unsupported expression <e>";
   }
 }
