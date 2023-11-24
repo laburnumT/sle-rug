@@ -25,11 +25,11 @@ syntax Answer
 // Think about disambiguation using priorities and associativity
 // and use C/Java style precedence rules (look it up on the internet)
 syntax Expr
-  = Id
+  = Id \ "true" \ "false"
   | Bool
   | Int
   | Str
-  | "(" Expr ")"
+  | bracket "(" Expr ")"
   > left (
       Expr "*" Expr
     | left Expr "/" Expr
@@ -38,9 +38,18 @@ syntax Expr
       Expr "-" Expr
     | left Expr "+" Expr
   )
-  | Expr "&&" Expr
-  | Expr "||" Expr
-  | Expr "\>" Expr
+  > left (
+      Expr "\<" Expr
+    | Expr "\<=" Expr
+    | Expr "\>" Expr
+    | Expr "\>=" Expr
+  )
+  > left (
+      Expr "==" Expr
+    | Expr "!=" Expr
+  )
+  > left Expr "&&" Expr
+  > left Expr "||" Expr
   ;
 
 syntax If_statement
