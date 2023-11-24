@@ -6,9 +6,9 @@ extend lang::std::Id;
 /*
  * Concrete syntax of QL
  */
-
 start syntax Form
-  = "form" Id name "{" Question* questions "}";
+  = "form" Id name "{" Question* questions "}"
+  ;
 
 // TODO: question, computed question, block, if-then-else, if-then
 syntax Question
@@ -65,7 +65,8 @@ syntax Else_statement
 syntax Type
   = "boolean"
   | "integer"
-  | "string";
+  | "string"
+  ;
 
 lexical Str
   = "\"" (![\"]|"\\\"")* "\""
