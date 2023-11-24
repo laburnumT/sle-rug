@@ -34,10 +34,20 @@ syntax Expr
   | Expr "+" Expr
   | Expr "*" Expr
   | Expr "/" Expr
+  | Expr "&&" Expr
+  | Expr "||" Expr
+  | Expr "\>" Expr
   ;
 
 syntax If_statement
-  = "if" "(" Expr ")" "{" Question* questions "}"
+  = "if" "(" Expr ")" "{" Question* questions "}" 
+  | "if" "(" Expr ")" "{" Question* questions "}" Else_statement else_statement
+  | "if" "(" Expr ")" "{" Question* questions "}" Else_statement else_statement
+  ;
+
+syntax Else_statement
+  = "else" "{" Question* questions "}" 
+  | "else" "(" Expr ")" "{" Question* questions "}"
   ;
   
 syntax Type
@@ -49,8 +59,10 @@ lexical Str
   = "\"" (![\"]|"\\\"")* "\""
   ;
 
+
 lexical Int 
-  = 
+  = [1-9][0-9]*
+  | "0"
   ;
 
 lexical Bool
