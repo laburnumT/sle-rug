@@ -25,7 +25,7 @@ syntax Answer
 // Think about disambiguation using priorities and associativity
 // and use C/Java style precedence rules (look it up on the internet)
 syntax Expr
-  = Id \ "true" \ "false"
+  = Id \ Keywords
   | Bool
   | Int
   | Str
@@ -79,4 +79,15 @@ lexical Int
 lexical Bool
   = "true"
   | "false"
+  ;
+
+keyword Keywords
+  = "form"
+  | "true"
+  | "false"
+  | "if"
+  | "else"
+  | "boolean"
+  | "integer"
+  | "string"
   ;
