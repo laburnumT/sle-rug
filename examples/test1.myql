@@ -1,4 +1,7 @@
 form test1 {
     "Test1 question"
-    hello: integer = 1 + 2 - 3 + 4 + 5
+    test1: integer = 1 + 2 - 3 + 4 + 5
+
+    "Test2 question"
+    test2: boolean = 5 == 5 == 4 == 4
 }

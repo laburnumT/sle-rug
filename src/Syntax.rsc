@@ -29,27 +29,27 @@ syntax Expr
   | Bool
   | Int
   | Str
-  | bracket "(" Expr ")"
+  | "(" Expr ")"
   > left (
-      Expr "*" Expr
-    | left Expr "/" Expr
+      Expr lhs "*" Expr rhs
+    | Expr lhs "/" Expr rhs
   )
   > left (
-      Expr "-" Expr
-    | left Expr "+" Expr
+      Expr lhs "-" Expr rhs
+    | Expr lhs "+" Expr rhs
   )
   > left (
-      Expr "\<" Expr
-    | Expr "\<=" Expr
-    | Expr "\>" Expr
-    | Expr "\>=" Expr
+      Expr lhs "\<"  Expr rhs
+    | Expr lhs "\<=" Expr rhs
+    | Expr lhs "\>"  Expr rhs
+    | Expr lhs "\>=" Expr rhs
   )
   > left (
-      Expr "==" Expr
-    | Expr "!=" Expr
+      Expr lhs "==" Expr rhs
+    | Expr lhs "!=" Expr rhs
   )
-  > left Expr "&&" Expr
-  > left Expr "||" Expr
+  > left Expr lhs "&&" Expr rhs
+  > left Expr lhs "||" Expr rhs
   ;
 
 syntax If_statement

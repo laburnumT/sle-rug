@@ -1,0 +1,4 @@
+form test2 {
+    if (false) {
+    }
+}
