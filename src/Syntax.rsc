@@ -12,7 +12,7 @@ start syntax Form
 
 // TODO: question, computed question, block, if-then-else, if-then
 syntax Question
-  = Str Answer
+  = Str question Answer answer_var
   | If_statement if_statement
   ;
 
