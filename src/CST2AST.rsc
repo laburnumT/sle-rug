@@ -67,6 +67,7 @@ AExpr cst2ast(Expr e) {
     case (Expr)`<Bool b>`: return boolLiteral(fromString("<b>"), src=b.src);
     case (Expr)`<Int i>`: return intLiteral(toInt("<i>"), src=i.src);
     case (Expr)`<Str s>`: return strLiteral("<s>", src=s.src);
+    case (Expr)`( <Expr e1> )`: return single_expr(cst2ast(e1), src=e.src);
     case (Expr)`<Expr e1> * <Expr e2>`: return mul(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`<Expr e1> / <Expr e2>`: return div(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`<Expr e1> - <Expr e2>`: return sub(cst2ast(e1), cst2ast(e2), src=e.src);
