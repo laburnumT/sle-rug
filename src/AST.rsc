@@ -8,7 +8,7 @@ module AST
  */
 
 data AForm(loc src = |tmp:///|)
-  = form(str name, list[AQuestion] questions)
+  = form(AId name, list[AQuestion] questions)
   ;
 
 data AQuestion(loc src = |tmp:///|)
@@ -31,12 +31,12 @@ data AExpr(loc src = |tmp:///|)
 
 data AIf_statement(loc src = |tmp:///|)
   = if1(AExpr expr)
-  | if2(AExpr expr, list[AQuestion] questions)
+  | if2(AExpr expr, list[AQuestion] questions, AElse_statement else_statement)
   ;
 
 data AElse_statement(loc src = |tmp:///|)
   = else1(list[AQuestion] questions)
-  | else2(AExpr expr, list[AQuestion] questions)
+  | else2(AIf_statement if_statement)
   ;
 
 data AType(loc src = |tmp:///|)

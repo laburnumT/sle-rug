@@ -53,13 +53,13 @@ syntax Expr
   ;
 
 syntax If_statement
-  = "if" "(" Expr ")" "{" Question* questions "}"
-  | "if" "(" Expr ")" "{" Question* questions "}" Else_statement else_statement
+  = "if" "(" Expr expr ")" "{" Question* questions "}"
+  | "if" "(" Expr expr ")" "{" Question* questions "}" Else_statement else_statement
   ;
 
 syntax Else_statement
   = "else" "{" Question* questions "}"
-  | "else" "(" Expr ")" "{" Question* questions "}"
+  | "else" If_statement if_statement
   ;
 
 syntax Type
