@@ -3,7 +3,8 @@ module CST2AST
 import Syntax;
 import AST;
 import ParseTree;
-
+import Boolean;
+import String;
 /*
  * Implement a mapping from concrete syntax trees (CSTs) to abstract syntax trees (ASTs)
  *
@@ -63,9 +64,22 @@ AElse_statement cst2ast(Else_statement else_statement){
 AExpr cst2ast(Expr e) {
   switch (e) {
     case (Expr)`<Id x>`: return ref(id("<x>", src=x.src), src=x.src);
-    // case (Expr)`<Bool b>`: return boolLiteral(b, src=b.src);
-    // case (Expr)`<Int i>`: return intLiteral(i, src=i.src);
-    
+    case (Expr)`<Bool b>`: return boolLiteral(fromString("<b>"), src=b.src);
+    case (Expr)`<Int i>`: return intLiteral(toInt("<i>"), src=i.src);
+    case (Expr)`<Str s>`: return strLiteral("<s>", src=s.src);
+    case (Expr)`<Expr e1> * <Expr e2>`: return mul(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> / <Expr e2>`: return div(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> - <Expr e2>`: return sub(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> + <Expr e2>`: return add(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> \< <Expr e2>`: return lt(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> \<= <Expr e2>`: return le(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> \> <Expr e2>`: return gt(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> \>= <Expr e2>`: return ge(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> == <Expr e2>`: return eq(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> != <Expr e2>`: return neq(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> && <Expr e2>`: return and(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> || <Expr e2>`: return or(cst2ast(e1), cst2ast(e2), src=e.src);
+
     default: throw "Unhandled expression: <e>";
   }
 }
@@ -78,5 +92,4 @@ default AType cst2ast(Type t) {
     
     default: throw "Unhandled type: <t>";
   }
-
 }
