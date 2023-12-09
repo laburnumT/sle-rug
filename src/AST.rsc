@@ -12,7 +12,7 @@ data AForm(loc src = |tmp:///|)
   ;
 
 data AQuestion(loc src = |tmp:///|)
-  = simple_question(AType type_name, AAnswer answer)
+  = simple_question(AStr question_txt, AAnswer answer)
   | conditional_question(AIf_statement if_statement)
   ;
 
@@ -42,7 +42,7 @@ data AExpr(loc src = |tmp:///|)
   ;
 
 data AIf_statement(loc src = |tmp:///|)
-  = if1(AExpr expr)
+  = if1(AExpr expr, list[AQuestion] questions)
   | if2(AExpr expr, list[AQuestion] questions, AElse_statement else_statement)
   ;
 
@@ -59,3 +59,6 @@ data AType(loc src = |tmp:///|)
 
 data AId(loc src = |tmp:///|)
   = id(str name);
+
+data AStr(loc src = |tmp:///|) 
+  = _str(str text);
