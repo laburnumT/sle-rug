@@ -13,4 +13,5 @@ import Syntax;
 void testMain(loc input) {
   parsed = parse(#Form, input);
   ast = cst2ast(parsed);
+  resolve(ast);
 }
