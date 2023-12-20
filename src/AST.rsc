@@ -11,54 +11,55 @@ data AForm(loc src = |tmp:///|)
   = form(AId name, list[AQuestion] questions)
   ;
 
+data APrompt(loc src = |tmp:///|)
+  = prompt(str string)
+  ;
+
 data AQuestion(loc src = |tmp:///|)
-  = simple_question(AStr question_txt, AAnswer answer)
-  | conditional_question(AIf_statement if_statement)
+  = question(APrompt questionTxt, AAnswer answer)
+  | conditionalQuestion(AIfStatement ifStatement)
   ;
 
 data AAnswer(loc src = |tmp:///|)
-  = simple_answer(AId id, AType type_name)
-  | expression_answer(AId id, AType type_name, AExpr expr)
+  = answer(AId id, AType typeName)
+  | answerExpresion(AId id, AType typeName, AExpr expr)
   ;
 
 data AExpr(loc src = |tmp:///|)
   = ref(AId id)
-  | boolLiteral(bool bool_val)
-  | intLiteral(int int_val)
-  | strLiteral(str str_val)
-  | single_expr(AExpr expr)
-  | mul(AExpr expr_left, AExpr expr_right)
-  | div(AExpr expr_left, AExpr expr_right)
-  | sub(AExpr expr_left, AExpr expr_right)
-  | add(AExpr expr_left, AExpr expr_right)
-  | lt(AExpr expr_left, AExpr expr_right)
-  | le(AExpr expr_left, AExpr expr_right)
-  | gt(AExpr expr_left, AExpr expr_right)
-  | ge(AExpr expr_left, AExpr expr_right)
-  | eq(AExpr expr_left, AExpr expr_right)
-  | neq(AExpr expr_left, AExpr expr_right)
-  | and(AExpr expr_left, AExpr expr_right)
-  | or(AExpr expr_left, AExpr expr_right)
+  | boolLiteral(bool boolVal)
+  | intLiteral(int intVal)
+  | strLiteral(str strVal)
+  | singleExpr(AExpr expr)
+  | mul(AExpr exprLeft, AExpr exprRight)
+  | div(AExpr exprLeft, AExpr exprRight)
+  | sub(AExpr exprLeft, AExpr exprRight)
+  | add(AExpr exprLeft, AExpr exprRight)
+  | lt(AExpr exprLeft, AExpr exprRight)
+  | le(AExpr exprLeft, AExpr exprRight)
+  | gt(AExpr exprLeft, AExpr exprRight)
+  | ge(AExpr exprLeft, AExpr exprRight)
+  | eqq(AExpr exprLeft, AExpr exprRight)
+  | neq(AExpr exprLeft, AExpr exprRight)
+  | and(AExpr exprLeft, AExpr exprRight)
+  | or(AExpr exprLeft, AExpr exprRight)
   ;
 
-data AIf_statement(loc src = |tmp:///|)
+data AIfStatement(loc src = |tmp:///|)
   = if1(AExpr expr, list[AQuestion] questions)
-  | if2(AExpr expr, list[AQuestion] questions, AElse_statement else_statement)
+  | if2(AExpr expr, list[AQuestion] questions, AElseStatement elseStatement)
   ;
 
-data AElse_statement(loc src = |tmp:///|)
+data AElseStatement(loc src = |tmp:///|)
   = else1(list[AQuestion] questions)
-  | else2(AIf_statement if_statement)
+  | else2(AIfStatement ifStatement)
   ;
+
+data AId(loc src = |tmp:///|)
+  = id(str name);
 
 data AType(loc src = |tmp:///|)
   = booleanType()
   | integerType()
   | stringType()
   ;
-
-data AId(loc src = |tmp:///|)
-  = id(str name);
-
-data AStr(loc src = |tmp:///|) 
-  = _str(str text);
