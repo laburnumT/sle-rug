@@ -1,7 +1,7 @@
 module Syntax
 
-extend lang::std::Layout;
 extend lang::std::Id;
+extend lang::std::Layout;
 
 /*
  * Concrete syntax of QL
@@ -10,15 +10,19 @@ start syntax Form
   = "form" Id name "{" Question* questions "}"
   ;
 
+syntax Prompt
+  = Str
+  ;
+
 // TODO: question, computed question, block, if-then-else, if-then
 syntax Question
-  = Str question Answer answer_var
-  | If_statement if_statement
+  = Prompt question Answer answerVar
+  | IfStatement ifStatement
   ;
 
 syntax Answer
-  = Id answer_var ":" Type type
-  | Id answer_var ":" Type type "=" Expr expr
+  = Id answerVar ":" Type type
+  | Id answerVar ":" Type type "=" Expr expr
   ;
 
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
@@ -52,14 +56,14 @@ syntax Expr
   > left Expr lhs "||" Expr rhs
   ;
 
-syntax If_statement
+syntax IfStatement
   = "if" "(" Expr expr ")" "{" Question* questions "}"
-  | "if" "(" Expr expr ")" "{" Question* questions "}" Else_statement else_statement
+  | "if" "(" Expr expr ")" "{" Question* questions "}" ElseStatement elseStatement
   ;
 
-syntax Else_statement
+syntax ElseStatement
   = "else" "{" Question* questions "}"
-  | "else" If_statement if_statement
+  | "else" IfStatement ifStatement
   ;
 
 syntax Type
