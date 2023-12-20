@@ -22,7 +22,7 @@ data AQuestion(loc src = |tmp:///|)
 
 data AAnswer(loc src = |tmp:///|)
   = answer(AId id, AType typeName)
-  | answerExpresion(AId id, AType typeName, AExpr expr)
+  | answerExpression(AId id, AType typeName, AExpr expr)
   ;
 
 data AExpr(loc src = |tmp:///|)
