@@ -41,7 +41,7 @@ default AAnswer cst2ast(Answer a) {
       return answer(id("<i>", src=i.src), cst2ast(t), src=a.src);
 
     case (Answer) `<Id i> : <Type t> = <Expr expr>`:
-      return answerExpresion(id("<i>", src=i.src), cst2ast(t), cst2ast(expr), src=a.src);
+      return answerExpression(id("<i>", src=i.src), cst2ast(t), cst2ast(expr), src=a.src);
 
     default:
       throw "Unhandled answer: <a>";
