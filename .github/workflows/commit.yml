@@ -1,0 +1,22 @@
+name: Commit checker
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  Check-sign-off:
+    name: Check for proper sign off
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Check commit message
+        run: |
+          gauthor="$(git log -1 --format='%aN <%aE>')"
+          gcommitter="$(git log -1 --format='%cN <%cE>')"
+          gbody="$(git log -1 --format='%B')"
+          if ! grep -qP "^Signed-off-by: ${gauthor}$" <<< "${gbody}"; then echo "Author must sign off on commit"; exit 1; fi
+          if ! grep -qP "^Signed-off-by: ${gcommitter}$" <<< "${gbody}"; then echo "Committer must sign off on commit"; exit 1; fi
