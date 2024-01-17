@@ -4,19 +4,19 @@ import Syntax;
 import Resolve;
 import AST;
 
-/* 
+/*
  * Transforming QL forms
  */
- 
- 
+
+
 /* Normalization:
  *  wrt to the semantics of QL the following
- *     q0: "" int; 
- *     if (a) { 
- *        if (b) { 
- *          q1: "" int; 
- *        } 
- *        q2: "" int; 
+ *     q0: "" int;
+ *     if (a) {
+ *        if (b) {
+ *          q1: "" int;
+ *        }
+ *        q2: "" int;
  *      }
  *
  *  is equivalent to
@@ -27,9 +27,9 @@ import AST;
  * Write a transformation that performs this flattening transformation.
  *
  */
- 
+
 AForm flatten(AForm f) {
-  return f; 
+  return f;
 }
 
 /* Rename refactoring:
@@ -38,11 +38,7 @@ AForm flatten(AForm f) {
  * Use the results of name resolution to find the equivalence class of a name.
  *
  */
- 
-start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
-   return f; 
-} 
- 
- 
- 
 
+start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
+   return f;
+}

@@ -45,7 +45,7 @@ Summary mySummarizer(loc origin, start[Form] input) {
   set[Message] msgs = check(ast, tenv, g.useDef);
 
   rel[loc, Message] msgMap = {< m.at, m> | Message m <- msgs };
-  
+
   rel[loc, str] docs = { <u, "Type: <type2str(t)>"> | <loc u, loc d> <- g.useDef, <d, _, _, Type t> <- tenv };
   return summary(origin, messages = msgMap, definitions = g.useDef, documentation = docs);
 }
@@ -53,7 +53,7 @@ Summary mySummarizer(loc origin, start[Form] input) {
 data Command
   = compileQL(start[Form] form);
 
-rel[loc,Command] myLenses(start[Form] input) 
+rel[loc,Command] myLenses(start[Form] input)
   = {<input@\loc, compileQL(input, title="Compile")>};
 
 
