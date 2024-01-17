@@ -13,5 +13,7 @@ import Syntax;
 void testMain(loc input) {
   parsed = parse(#Form, input);
   ast = cst2ast(parsed);
-  resolve(ast);
+  RefGraph g = resolve(ast);
+  TEnv tenv = collect(ast);
+  set[Message] msgs = check(ast, tenv, g.useDef);
 }
