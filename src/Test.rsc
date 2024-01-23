@@ -10,10 +10,11 @@ import ParseTree;
 import Resolve;
 import Syntax;
 
-void testMain(loc input) {
-  parsed = parse(#Form, input);
+void testMain(loc inputFile) {
+  parsed = parse(#Form, inputFile);
   ast = cst2ast(parsed);
   RefGraph g = resolve(ast);
   TEnv tenv = collect(ast);
   set[Message] msgs = check(ast, tenv, g.useDef);
+  compile(ast);
 }
