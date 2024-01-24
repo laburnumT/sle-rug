@@ -9,11 +9,13 @@ import IO;
 import Message;
 import ParseTree;
 import Resolve;
+import Set;
 import Syntax;
+import Transform;
 
 void testMain(loc inputFile) {
   parsed = parse(#Form, inputFile);
-  ast = cst2ast(parsed);
+  AForm ast = cst2ast(parsed);
   RefGraph g = resolve(ast);
   TEnv tenv = collect(ast);
   set[Message] msgs = check(ast, tenv, g.useDef);
@@ -24,6 +26,10 @@ void testMain(loc inputFile) {
     Value val = getValue(venvMap[venvName]);
     env = eval(ast, input(venvName, val), env);
   }
+  AForm flat = flatten(ast);
+  compile(flat);
+  tmp = parse(#start[Form], inputFile);
+  start[Form] renamed = rename(tmp, getFirstFrom(g.useDef.use), "testReplace", g.useDef);
 }
 
 Value getValue(value val) {
