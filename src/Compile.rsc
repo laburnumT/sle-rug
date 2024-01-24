@@ -243,12 +243,18 @@ str refreshVisibility(AForm f, TEnv tenv, RefGraph rg) {
   for (m <- condMap) {
     ret += "if(<expr2js(m.expr, tenv, rg)>){";
       ret += "document.getElementById(\"ifStatement<m.conditionalId>\").style.display = \"block\";";
-      ret += "document.getElementById(\"elseStatement<m.conditionalId>\").style.display = \"none\";";
+      ret += "let tmp = document.getElementById(\"elseStatement<m.conditionalId>\");";
+      ret += "if(tmp){";
+        ret += "tmp.style.display = \"none\";";
+      ret += "}";
     ret += "}";
     ret += "else{";
       ret += "document.getElementById(\"ifStatement<m.conditionalId>\").style.display = \"none\";";
-      ret += "document.getElementById(\"elseStatement<m.conditionalId>\").style.display = \"block\";";
-    ret += "};";
+      ret += "let tmp = document.getElementById(\"elseStatement<m.conditionalId>\");";
+      ret += "if(tmp){";
+        ret += "tmp.style.display = \"block\";";
+      ret += "}";
+    ret += "}";
   }
   return ret;
 }
