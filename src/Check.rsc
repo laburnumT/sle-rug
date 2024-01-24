@@ -88,7 +88,7 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
   return msgs;
 }
 
-set[Message] check(APrompt p, TEnv tenv, UseDef useDef) {
+set[Message] check(APrompt p, TEnv tenv, UseDef _) {
   set[Message] msgs = {};
   msgs += checkDuplicatePrompt(p, tenv);
   return msgs;

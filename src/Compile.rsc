@@ -238,7 +238,7 @@ str expr2js(AExpr e, TEnv tenv, RefGraph rg) {
   return ret;
 }
 
-str refreshVisibility(AForm f, TEnv tenv, RefGraph rg) {
+str refreshVisibility(TEnv tenv, RefGraph rg) {
   str ret = "";
   for (m <- condMap) {
     ret += "if(<expr2js(m.expr, tenv, rg)>){";
@@ -276,7 +276,7 @@ str refresh(AForm f, TEnv tenv, RefGraph rg) {
   ret += "if(elem !== undefined){";
   ret += refreshVars(f, tenv, rg);
   ret += "}";
-  ret += refreshVisibility(f, tenv, rg);
+  ret += refreshVisibility(tenv, rg);
   ret += "}";
   return ret;
 }
