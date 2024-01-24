@@ -34,6 +34,7 @@ syntax Expr
   | Int
   | Str
   | "(" Expr ")"
+  > right "!" Expr
   > left (
       Expr lhs "*" Expr rhs
     | Expr lhs "/" Expr rhs

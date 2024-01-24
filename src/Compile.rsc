@@ -197,6 +197,9 @@ str expr2js(AExpr e, TEnv tenv, RefGraph rg) {
     case singleExpr(AExpr expr): {
       ret += expr2js(expr, tenv, rg);
     }
+    case not(AExpr expr): {
+      ret += "!<expr2js(expr, tenv, rg)>";
+    }
     case mul(AExpr exprLeft, AExpr exprRight): {
       ret += expr2js(exprLeft, tenv, rg) + "*" + expr2js(exprRight, tenv, rg);
     }

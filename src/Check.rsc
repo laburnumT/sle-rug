@@ -317,6 +317,9 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     case singleExpr(AExpr expr): {
       return typeOf(expr, tenv, useDef);
     }
+    case not(_): {
+      return tbool();
+    }
     case mul(_, _): {
       return tint();
     }

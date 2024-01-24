@@ -67,6 +67,9 @@ AExpr cst2ast(Expr e) {
     case (Expr) `( <Expr e1> )`: {
       return singleExpr(cst2ast(e1), src=e.src);
     }
+    case (Expr) `! <Expr e1>`: {
+      return not(cst2ast(e1), src=e.src);
+    }
     case (Expr) `<Expr e1> * <Expr e2>`: {
       return mul(cst2ast(e1), cst2ast(e2), src=e.src);
     }
