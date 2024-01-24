@@ -170,11 +170,9 @@ str initVals(AForm f, RefGraph rg) {
       ret += "<name> = document.getElementById(\"<name>\");";
       ret += "<name>." + access2js(t) + "=" + defaultValues(t) + ";";
     }
-    else {
-      if (/answer(id(name), AType t) := f) {
-        ret += "<name> = document.getElementById(\"<name>\");";
-        ret += "<name>." + access2js(t) + "=" + defaultValues(t) + ";";
-      }
+    else if (/answer(id(name), AType t) := f) {
+      ret += "<name> = document.getElementById(\"<name>\");";
+      ret += "<name>." + access2js(t) + "=" + defaultValues(t) + ";";
     }
   }
   ret += "}";

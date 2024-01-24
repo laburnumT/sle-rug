@@ -102,11 +102,9 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
   if (/conditionalQuestion(AIfStatement i) := q) {
     msgs += check(i, tenv, useDef);
   }
-  else {
-    if (/question(APrompt p, AAnswer a) := q) {
-      msgs += check(p, tenv, useDef);
-      msgs += check(a, tenv, useDef);
-    }
+  else if (/question(APrompt p, AAnswer a) := q) {
+    msgs += check(p, tenv, useDef);
+    msgs += check(a, tenv, useDef);
   }
   return msgs;
 }
@@ -119,11 +117,9 @@ set[Message] check(AAnswer a, TEnv tenv, UseDef useDef) {
     msgs += checkType(id.name, convert(typeName), typeOf(expr, tenv, useDef),
                       a.src, tenv);
   }
-  else {
-    if (/answer(AId id, AType typeName) := a) {
-      msgs += checkType(id.name, convert(typeName), convert(typeName), a.src,
-                        tenv);
-    }
+  else if (/answer(AId id, AType typeName) := a) {
+    msgs += checkType(id.name, convert(typeName), convert(typeName), a.src,
+                      tenv);
   }
   return msgs;
 }
@@ -275,12 +271,10 @@ set[Message] check(AIfStatement i, TEnv tenv, UseDef useDef) {
     }
     msgs += check(elseStatement, tenv, useDef);
   }
-  else {
-    if (/if1(AExpr expr, list[AQuestion] questions) := i) {
-      msgs += check(expr, tenv, useDef);
-      for (AQuestion q <- questions) {
-        msgs += check(q, tenv, useDef);
-      }
+  else if (/if1(AExpr expr, list[AQuestion] questions) := i) {
+    msgs += check(expr, tenv, useDef);
+    for (AQuestion q <- questions) {
+      msgs += check(q, tenv, useDef);
     }
   }
   return msgs;
@@ -291,11 +285,9 @@ set[Message] check(AElseStatement e, TEnv tenv, UseDef useDef) {
   if (/else2(AIfStatement i) := e) {
     msgs += check(i, tenv, useDef);
   }
-  else {
-    if (/else1(list[AQuestion] questions) := e) {
-      for (AQuestion q <- questions) {
-        msgs += check(q, tenv, useDef);
-      }
+  else if (/else1(list[AQuestion] questions) := e) {
+    for (AQuestion q <- questions) {
+      msgs += check(q, tenv, useDef);
     }
   }
   return msgs;
