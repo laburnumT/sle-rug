@@ -13,12 +13,15 @@ data Type
 
 Type convert(AType t) {
   switch(t) {
-    case stringType():
+    case stringType(): {
       return tstr();
-    case integerType():
+    }
+    case integerType(): {
       return tint();
-    case booleanType():
+    }
+    case booleanType(): {
       return tbool();
+    }
     default:
       return tunknown();
   }
@@ -130,10 +133,12 @@ set[Message] check(AAnswer a, TEnv tenv, UseDef useDef) {
 set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
   switch (e) {
-    case ref(AId x):
+    case ref(AId x): {
       msgs += { error("Undeclared question", x.src) | useDef[x.src] == {} };
-    case singleExpr(AExpr expr):
+    }
+    case singleExpr(AExpr expr): {
       msgs += check(expr, tenv, useDef);
+    }
     case mul(AExpr exprLeft, AExpr exprRight): {
       msgs += check(exprLeft, tenv, useDef);
       msgs += check(exprRight, tenv, useDef);
@@ -300,38 +305,54 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
         return t;
       }
     }
-    case boolLiteral(_):
+    case boolLiteral(_): {
       return tbool();
-    case intLiteral(_):
+    }
+    case intLiteral(_): {
       return tint();
-    case strLiteral(_):
+    }
+    case strLiteral(_): {
       return tstr();
-    case singleExpr(AExpr expr):
+    }
+    case singleExpr(AExpr expr): {
       return typeOf(expr, tenv, useDef);
-    case mul(_, _):
+    }
+    case mul(_, _): {
       return tint();
-    case div(_, _):
+    }
+    case div(_, _): {
       return tint();
-    case sub(_, _):
+    }
+    case sub(_, _): {
       return tint();
-    case add(_, _):
+    }
+    case add(_, _): {
       return tint();
-    case lt(_, _):
+    }
+    case lt(_, _): {
       return tbool();
-    case le(_, _):
+    }
+    case le(_, _): {
       return tbool();
-    case gt(_, _):
+    }
+    case gt(_, _): {
       return tbool();
-    case ge(_, _):
+    }
+    case ge(_, _): {
       return tbool();
-    case eqq(_, _):
+    }
+    case eqq(_, _): {
       return tbool();
-    case neq(_, _):
+    }
+    case neq(_, _): {
       return tbool();
-    case and(_, _):
+    }
+    case and(_, _): {
       return tbool();
-    case or(_, _):
+    }
+    case or(_, _): {
       return tbool();
+    }
   }
   return tunknown();
 }

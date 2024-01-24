@@ -24,107 +24,132 @@ AForm cst2ast(Form f) {
 
 default AQuestion cst2ast(Question q) {
   switch (q) {
-    case (Question) `<Prompt p> <Answer a>`:
+    case (Question) `<Prompt p> <Answer a>`: {
       return question(prompt("<p>", src=p.src), cst2ast(a), src=q.src);
-
-    case (Question) `<IfStatement ifStatement>`:
+    }
+    case (Question) `<IfStatement ifStatement>`: {
       return conditionalQuestion(cst2ast(ifStatement), src=q.src);
-
-    default:
+    }
+    default: {
       throw "Unhandled question: <q>";
+    }
   }
 }
 
 default AAnswer cst2ast(Answer a) {
   switch (a) {
-    case (Answer) `<Id i> : <Type t>`:
+    case (Answer) `<Id i> : <Type t>`: {
       return answer(id("<i>", src=i.src), cst2ast(t), src=a.src);
-
-    case (Answer) `<Id i> : <Type t> = <Expr expr>`:
+    }
+    case (Answer) `<Id i> : <Type t> = <Expr expr>`: {
       return answerExpression(id("<i>", src=i.src), cst2ast(t), cst2ast(expr), src=a.src);
-
-    default:
+    }
+    default: {
       throw "Unhandled answer: <a>";
+    }
   }
 }
 
 AExpr cst2ast(Expr e) {
   switch (e) {
-    case (Expr) `<Id x>`:
+    case (Expr) `<Id x>`: {
       return ref(id("<x>", src=x.src), src=x.src);
-    case (Expr) `<Bool b>`:
+    }
+    case (Expr) `<Bool b>`: {
       return boolLiteral(fromString("<b>"), src=b.src);
-    case (Expr) `<Int i>`:
+    }
+    case (Expr) `<Int i>`: {
       return intLiteral(toInt("<i>"), src=i.src);
-    case (Expr) `<Str s>`:
+    }
+    case (Expr) `<Str s>`: {
       return strLiteral("<s>", src=s.src);
-    case (Expr) `( <Expr e1> )`:
+    }
+    case (Expr) `( <Expr e1> )`: {
       return singleExpr(cst2ast(e1), src=e.src);
-    case (Expr) `<Expr e1> * <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> * <Expr e2>`: {
       return mul(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> / <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> / <Expr e2>`: {
       return div(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> - <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> - <Expr e2>`: {
       return sub(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> + <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> + <Expr e2>`: {
       return add(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> \< <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> \< <Expr e2>`: {
       return lt(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> \<= <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> \<= <Expr e2>`: {
       return le(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> \> <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> \> <Expr e2>`: {
       return gt(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> \>= <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> \>= <Expr e2>`: {
       return ge(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> == <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> == <Expr e2>`: {
       return eqq(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> != <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> != <Expr e2>`: {
       return neq(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> && <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> && <Expr e2>`: {
       return and(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr) `<Expr e1> || <Expr e2>`:
+    }
+    case (Expr) `<Expr e1> || <Expr e2>`: {
       return or(cst2ast(e1), cst2ast(e2), src=e.src);
-
-    default: throw "Unhandled expression: <e>";
+    }
+    default: {
+      throw "Unhandled expression: <e>";
+    }
   }
 }
 
 default AIfStatement cst2ast(IfStatement i) {
   switch (i) {
-    case (IfStatement) `if ( <Expr expr> ) { <Question* qs> }`:
+    case (IfStatement) `if ( <Expr expr> ) { <Question* qs> }`: {
       return if1(cst2ast(expr), [cst2ast(q) | q <- qs], src=i.src);
-
-    case (IfStatement) `if ( <Expr expr> ) { <Question* qs> } <ElseStatement e>`:
+    }
+    case (IfStatement) `if ( <Expr expr> ) { <Question* qs> } <ElseStatement e>`: {
       return if2(cst2ast(expr), [cst2ast(q) | q <- qs], cst2ast(e), src=i.src);
-
-    default:
+    }
+    default: {
       throw "Unhandled if statement: <i>";
+    }
   }
 }
 
 default AElseStatement cst2ast(ElseStatement e) {
   switch (e) {
-    case (ElseStatement) `else { <Question* qs> }`:
+    case (ElseStatement) `else { <Question* qs> }`: {
       return else1([cst2ast(q) | q <- qs], src=e.src);
-
-    case (ElseStatement) `else <IfStatement i>`:
+    }
+    case (ElseStatement) `else <IfStatement i>`: {
       return else2(cst2ast(i), src=e.src);
-
-    default:
+    }
+    default: {
       throw "Unhandled else statement: <e>";
+    }
   }
 }
 
 default AType cst2ast(Type t) {
   switch (t) {
-    case (Type) `boolean`:
+    case (Type) `boolean`: {
       return booleanType(src=t.src);
-    case (Type) `integer`:
+    }
+    case (Type) `integer`: {
       return integerType(src=t.src);
-    case (Type) `string`:
+    }
+    case (Type) `string`: {
       return stringType(src=t.src);
-
-    default:
+    }
+    default: {
       throw "Unhandled type: <t>";
+    }
   }
 }
