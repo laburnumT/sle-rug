@@ -1,0 +1,14 @@
+form redefinition {
+    "A"
+        a: boolean
+    if (a) { // Should take you to line 3
+        "B"
+            a: boolean
+        "C"
+            c: boolean = a // Should take you to line 6
+    }
+    "D"
+        a: boolean
+    "E"
+        e: boolean = a // Should take you to line 11
+}
