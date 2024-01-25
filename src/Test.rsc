@@ -26,8 +26,6 @@ void testMain(loc inputFile) {
     Value val = getValue(venvMap[venvName]);
     env = eval(ast, input(venvName, val), env);
   }
-  AForm flat = flatten(ast);
-  compile(flat);
   tmp = parse(#start[Form], inputFile);
   start[Form] renamed = rename(tmp, getFirstFrom(g.useDef.use), "testReplace", g.useDef);
 }
