@@ -270,6 +270,9 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
 set[Message] check(AIfStatement i, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
   if (/if2(AExpr expr, list[AQuestion] questions, AElseStatement elseStatement) := i) {
+    if (typeOf(expr, tenv, useDef) != tbool()) {
+      msgs += error("Condition must be of boolean type.", expr.src);
+    }
     msgs += check(expr, tenv, useDef);
     for (AQuestion q <- questions) {
       msgs += check(q, tenv, useDef);
@@ -277,6 +280,9 @@ set[Message] check(AIfStatement i, TEnv tenv, UseDef useDef) {
     msgs += check(elseStatement, tenv, useDef);
   }
   else if (/if1(AExpr expr, list[AQuestion] questions) := i) {
+    if (typeOf(expr, tenv, useDef) != tbool()) {
+      msgs += error("Condition must be of boolean type.", expr.src);
+    }
     msgs += check(expr, tenv, useDef);
     for (AQuestion q <- questions) {
       msgs += check(q, tenv, useDef);
