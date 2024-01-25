@@ -25,23 +25,36 @@ alias ConditionalMap = rel[AExpr expr, int conditionalId];
 ConditionalMap condMap = {};
 int conditionalQuestionCnt = 0;
 
+loc getDef(loc useOrDef, UseDef useDef) {
+  if (<useOrDef, loc defLoc> <- useDef) {
+    return defLoc;
+  }
+  return useOrDef;
+}
+
+str mangleId(AId id, RefGraph rg) {
+  loc src = getDef(id.src, rg.useDef);
+  return "<id.name>_<md5Hash(src)>";
+}
+
 void compile(AForm f) {
   condMap = {};
   conditionalQuestionCnt = 0;
-  writeFile(f.src[extension="html"].top, writeHTMLString(form2html(f)));
-  writeFile(f.src[extension="js"].top, form2js(f));
+  RefGraph rg = resolve(f);
+  writeFile(f.src[extension="html"].top, writeHTMLString(form2html(f, rg)));
+  writeFile(f.src[extension="js"].top, form2js(f, rg));
 }
 
-HTMLElement form2html(AForm f) {
+HTMLElement form2html(AForm f, RefGraph rg) {
   list[HTMLElement] elements = [];
   for (AQuestion q <- f.questions) {
-    elements += question2html(q);
+    elements += question2html(q, rg);
   }
   elements += script([], src="<f.src[extension="js"].file>");
   return html(elements);
 }
 
-HTMLElement question2html(AQuestion q) {
+HTMLElement question2html(AQuestion q, RefGraph rg) {
   list[HTMLElement] elements = [];
   str class = "";
   str id = "";
@@ -49,19 +62,19 @@ HTMLElement question2html(AQuestion q) {
     case conditionalQuestion(AIfStatement ifStatement): {
       class = "conditionalQuestion";
       id = "conditionalQuestion<conditionalQuestionCnt>";
-      elements += if2html(ifStatement);
+      elements += if2html(ifStatement, rg);
     }
     case question(APrompt prompt, AAnswer answer): {
       class = "question";
-      id = answer.id.name + "Div";
+      id = "<mangleId(answer.id, rg)>iv";
       elements += label([\data(prompt.string)], \for=answer.id.name);
-      elements += questionField(answer.id.name, answer.typeName);
+      elements += questionField(mangleId(answer.id, rg), answer.typeName);
     }
   }
   return div(elements, class=class, id=id);
 }
 
-HTMLElement if2html(AIfStatement ifStatement) {
+HTMLElement if2html(AIfStatement ifStatement, RefGraph rg) {
   list[HTMLElement] elements = [];
   int conditionalId = conditionalQuestionCnt;
   conditionalQuestionCnt += 1;
@@ -70,16 +83,16 @@ HTMLElement if2html(AIfStatement ifStatement) {
       condMap += <expr, conditionalId>;
       list[HTMLElement] ifQuestions = [];
       for (AQuestion q <- questions) {
-        ifQuestions += question2html(q);
+        ifQuestions += question2html(q, rg);
       }
       elements += div(ifQuestions, id="ifStatement<conditionalId>");
-      elements += else2html(elseStatement, conditionalId);
+      elements += else2html(elseStatement, conditionalId, rg);
     }
     case if1(AExpr expr, list[AQuestion] questions): {
       condMap += <expr, conditionalId>;
       list[HTMLElement] ifQuestions = [];
       for (AQuestion q <- questions) {
-        ifQuestions += question2html(q);
+        ifQuestions += question2html(q, rg);
       }
       elements += div(ifQuestions, id="ifStatement<conditionalId>");
     }
@@ -87,15 +100,15 @@ HTMLElement if2html(AIfStatement ifStatement) {
   return div(elements);
 }
 
-HTMLElement else2html(AElseStatement elseStatement, int conditionalId) {
+HTMLElement else2html(AElseStatement elseStatement, int conditionalId, RefGraph rg) {
   list[HTMLElement] elements = [];
   switch (elseStatement) {
     case else2(AIfStatement ifStatement): {
-      elements += if2html(ifStatement);
+      elements += if2html(ifStatement, rg);
     }
     case else1(list[AQuestion] questions): {
       for (AQuestion q <- questions) {
-        elements += question2html(q);
+        elements += question2html(q, rg);
       }
     }
   }
@@ -161,18 +174,19 @@ str defaultValues(AType t) {
 
 str initVals(AForm f, RefGraph rg) {
   str ret = "";
-  for (str name <- rg.defs.name) {
-    ret += "var <name>;";
+  for (def <- rg.defs) {
+    ret += "var <mangleId(id(def.name, src=def.def), rg)>;";
   }
   ret += "function initVals(){";
-  for (str name <- rg.defs.name) {
+  for (def <- rg.defs) {
+    str name = def.name;
     if (/answerExpression(id(name), AType t, _) := f) {
-      ret += "<name> = document.getElementById(\"<name>\");";
-      ret += "<name>." + access2js(t) + "=" + defaultValues(t) + ";";
+      ret += "<mangleId(id(name, src=def.def), rg)> = document.getElementById(\"<mangleId(id(name, src=def.def), rg)>\");";
+      ret += "<mangleId(id(name, src=def.def), rg)>." + access2js(t) + "=" + defaultValues(t) + ";";
     }
     else if (/answer(id(name), AType t) := f) {
-      ret += "<name> = document.getElementById(\"<name>\");";
-      ret += "<name>." + access2js(t) + "=" + defaultValues(t) + ";";
+      ret += "<mangleId(id(name, src=def.def), rg)> = document.getElementById(\"<mangleId(id(name, src=def.def), rg)>\");";
+      ret += "<mangleId(id(name, src=def.def), rg)>." + access2js(t) + "=" + defaultValues(t) + ";";
     }
   }
   ret += "}";
@@ -183,7 +197,7 @@ str expr2js(AExpr e, TEnv tenv, RefGraph rg) {
   str ret = "(";
   switch (e) {
     case ref(AId id): {
-      ret += "<id.name>." + access2js(typeOf(e, tenv, rg.useDef));
+      ret += "<mangleId(id, rg)>." + access2js(typeOf(e, tenv, rg.useDef));
     }
     case boolLiteral(bool boolVal): {
       ret += "<boolVal>";
@@ -264,10 +278,11 @@ str refreshVisibility(TEnv tenv, RefGraph rg) {
 
 str refreshVars(AForm f, TEnv tenv, RefGraph rg) {
   str ret = "";
-  for (str name <- rg.defs.name) {
+  for (def <- rg.defs) {
+    str name = def.name;
     if (/answerExpression(id(name), AType t, AExpr expr) := f) {
-      ret += "if(elem.id != \"<name>\"){";
-      ret += "<name>.<access2js(t)>=<expr2js(expr, tenv, rg)>";
+      ret += "if(elem.id != \"<mangleId(id(name, src=def.def), rg)>\"){";
+      ret += "<mangleId(id(name, src=def.def), rg)>.<access2js(t)>=<expr2js(expr, tenv, rg)>";
       ret += "}";
     }
   }
@@ -284,10 +299,9 @@ str refresh(AForm f, TEnv tenv, RefGraph rg) {
   return ret;
 }
 
-str form2js(AForm f) {
+str form2js(AForm f, RefGraph rg) {
   str ret = "";
   TEnv tenv = collect(f);
-  RefGraph rg = resolve(f);
   ret += initVals(f, rg);
   ret += refresh(f, tenv, rg);
   ret += "initVals();";

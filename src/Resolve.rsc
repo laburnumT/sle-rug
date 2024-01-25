@@ -16,7 +16,9 @@ alias Use = rel[loc use, str name];
 
 alias UseDef = rel[loc use, loc def];
 
-alias ScopeDef = tuple[list[AId] scope, UseDef useDef];
+alias Scope = tuple[list[str] names, list[loc] locs];
+
+alias ScopeDef = tuple[Scope scope, UseDef useDef];
 
 // the reference graph
 alias RefGraph = tuple[
@@ -25,10 +27,26 @@ alias RefGraph = tuple[
   UseDef useDef
 ];
 
+Scope push(AId elem, Scope scope) {
+  scope.names = push(elem.name, scope.names);
+  scope.locs = push(elem.src, scope.locs);
+  return scope;
+}
+
+int indexOf(Scope scope, str elem) {
+  return indexOf(scope.names, elem);
+}
+
+AId elementAt(Scope scope, int index) {
+  str name = elementAt(scope.names, index);
+  loc src = elementAt(scope.locs, index);
+  return id(name, src=src);
+}
+
 RefGraph resolve(AForm f) {
   Use us = uses(f);
   Def ds = defs(f);
-  ScopeDef scopeDef = <[], {}>;
+  ScopeDef scopeDef = <<[], []>, {}>;
   scopeDef.scope = push(f.name, scopeDef.scope);
   for (AQuestion q <- f.questions) {
     scopeDef = resolve(q, scopeDef);
@@ -65,7 +83,7 @@ ScopeDef resolve(AIfStatement ifStatement, ScopeDef scopeDef) {
   switch (ifStatement) {
     case if2(AExpr expr, list[AQuestion] questions, AElseStatement elseStatement): {
       scopeDef = addToUseDef(expr, scopeDef);
-      list[AId] scopeTmp = scopeDef.scope;
+      Scope scopeTmp = scopeDef.scope;
       for (AQuestion q <- questions) {
         scopeDef = resolve(q, scopeDef);
       }
@@ -75,7 +93,7 @@ ScopeDef resolve(AIfStatement ifStatement, ScopeDef scopeDef) {
     }
     case if1(AExpr expr, list[AQuestion] questions): {
       scopeDef = addToUseDef(expr, scopeDef);
-      list[AId] scopeTmp = scopeDef.scope;
+      Scope scopeTmp = scopeDef.scope;
       for (AQuestion q <- questions) {
         scopeDef = resolve(q, scopeDef);
       }
@@ -100,8 +118,10 @@ ScopeDef resolve(AElseStatement elseStatement, ScopeDef scopeDef) {
 }
 
 ScopeDef addToUseDef(AExpr e, ScopeDef scopeDef) {
-  for (AId idDef <- scopeDef.scope) {
-    for (/ref(AId idUse) := e) {
+  for (/ref(AId idUse) := e) {
+    int index = indexOf(scopeDef.scope, idUse.name);
+    if (index != -1) {
+      AId idDef = elementAt(scopeDef.scope, index);
       if (idUse.name == idDef.name) {
         scopeDef.useDef += {<idUse.src, idDef.src>};
       }
